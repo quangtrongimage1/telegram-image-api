@@ -123,9 +123,9 @@ export class ImageApiController {
             if (!downloadUrl) throw new Error('Failed to get file URL');
             urlImageCache.set(fileId, downloadUrl);
          }
-         const response = await fetch(downloadUrl);
+         const response: globalThis.Response = await fetch(downloadUrl);
 
-         if (!response.ok || !response.body) {
+         if (response.ok || !response.body) {
             return res.status(response.status).send('Image not found');
          }
 
