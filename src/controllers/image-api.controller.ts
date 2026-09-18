@@ -5,8 +5,6 @@ import { ImageApiService } from '../services';
 import { ApiResponse } from '../types';
 import { getLargestImage } from '../utils/image';
 
-const urlImageCache = new Map<string, string>();
-
 const uploadFilesSchema = z.object({
    files: z.array(z.any()).min(1).max(10),
 });
@@ -116,13 +114,10 @@ export class ImageApiController {
       try {
          const validatedParams = getFileSchema.parse({ fileId: req.params.fileId });
          const fileId = validatedParams.fileId;
-         let downloadUrl = urlImageCache.get(fileId);
-         if (!downloadUrl) {
-            const result = await this.imageApiService.getFileInfo(fileId);
-            downloadUrl = result.data?.downloadUrl;
-            if (!downloadUrl) throw new Error('Failed to get file URL');
-            urlImageCache.set(fileId, downloadUrl);
-         }
+         const result = await this.imageApiService.getFileInfo(fileId);
+         const downloadUrl = result.data?.downloadUrl;
+         if (!downloadUrl) throw new Error('Failed to get file URL');
+
          const response: Awaited<ReturnType<typeof fetch>> = await fetch(downloadUrl);
 
          if (!response.ok || !response.body) {
