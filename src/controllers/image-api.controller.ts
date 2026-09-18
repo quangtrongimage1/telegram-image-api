@@ -125,7 +125,7 @@ export class ImageApiController {
          }
          const response: Awaited<ReturnType<typeof fetch>> = await fetch(downloadUrl);
 
-         if (response.ok || !response.body) {
+         if (!response.ok || !response.body) {
             return res.status(response.status).send('Image not found');
          }
 
@@ -138,7 +138,7 @@ export class ImageApiController {
          }
 
          // Stream trực tiếp Telegram -> Express -> Browser
-         Readable.fromWeb(response.body).pipe(res);
+         Readable.fromWeb(response.body as Parameters<typeof Readable.fromWeb>[0]).pipe(res);
       } catch (error) {
          console.error('[Image] Error:', error);
 
