@@ -5,9 +5,11 @@ import dotenv from 'dotenv';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
 import { createControllers } from './src/controllers';
 import { createImageApiRoutes, createImageRoutes } from './src/routes';
 import { formatSeconds } from './src/utils/uptime';
+import { swaggerSpec, swaggerUiOptions } from './src/config/swagger';
 dotenv.config();
 
 const app = express();
@@ -61,6 +63,15 @@ app.use('/api', imageRoutes);
 const viewRoutes = createImageRoutes(controllers.imageApiController);
 app.use('/view', viewRoutes);
 
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
+
+// Swagger JSON spec
+app.get('/api-docs.json', (_req, res) => {
+   res.setHeader('Content-Type', 'application/json');
+   res.send(swaggerSpec);
+});
+
 // Health check endpoint
 app.get('/', (_req, res) => {
    res.json({
@@ -92,6 +103,7 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 app.listen(PORT, () => {
    console.log(`Server running on port ${PORT}`);
    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+   console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
 });
 
 export default app;

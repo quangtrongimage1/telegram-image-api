@@ -27,6 +27,7 @@ export class ImageApiService {
          };
       }
    }
+
    async processAndSendImages(files: Buffer[], caption?: string) {
       try {
          const result = await this.telegramService.sendPhotos(files, { caption });
@@ -57,7 +58,7 @@ export class ImageApiService {
          if (!cacheUrl) {
             const fileInfo = await this.telegramService.getFile(fileId);
             const file_path = fileInfo.result.file_path;
-            const fileUrl = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${file_path}`;
+            const fileUrl = `${TELEGRAM_API_URL}/file/bot${process.env.BOT_TOKEN}/${file_path}`;
             data.downloadUrl = fileUrl;
             data.filePath = file_path;
             data.fileSize = fileInfo.result.file_size;
