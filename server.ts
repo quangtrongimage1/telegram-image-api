@@ -6,10 +6,10 @@ import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec, swaggerUiOptions } from './src/config/swagger';
 import { createControllers } from './src/controllers';
 import { createImageApiRoutes, createImageRoutes } from './src/routes';
 import { formatSeconds } from './src/utils/uptime';
-import { swaggerSpec, swaggerUiOptions } from './src/config/swagger';
 dotenv.config();
 
 const app = express();
@@ -36,6 +36,9 @@ app.use(
          'http://localhost:3000',
          'http://localhost:3001',
          'http://localhost:3002',
+         'http://localhost:8080',
+         'http://localhost:8888',
+         'http://localhost:8787',
       ],
       credentials: true,
    }),
